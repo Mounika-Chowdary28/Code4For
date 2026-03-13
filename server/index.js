@@ -30,6 +30,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/career-re
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/profile', require('./routes/profile'));
 app.use('/api/analysis', require('./routes/analysis'));
+app.use('/api/jobs', require('./routes/jobs'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

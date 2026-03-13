@@ -28,17 +28,35 @@ router.get('/', auth, async (req, res) => {
     try {
       const prompt = `Based on the following user profile, provide a personalized career re-entry analysis for a woman returning to work:
 
-Previous Role: ${user.profile.previousRole}
-Experience: ${user.profile.experience}
-Career Break Duration: ${user.profile.careerBreakDuration}
-Desired Career Path: ${user.profile.desiredCareerPath}
-Current Skills: ${user.profile.skills?.join(', ') || 'None specified'}
-Certifications: ${user.profile.certifications?.join(', ') || 'None specified'}
+Personal Information:
+- Age: ${user.profile.age || 'Not specified'}
+- Location: ${user.profile.location || 'Not specified'}
+- Education: ${user.profile.education || 'Not specified'}
+- Languages: ${user.profile.languages?.join(', ') || 'Not specified'}
+
+Career Information:
+- Previous Role: ${user.profile.previousRole}
+- Experience: ${user.profile.experience}
+- Career Break Duration: ${user.profile.careerBreakDuration}
+- Desired Career Path: ${user.profile.desiredCareerPath}
+- Current Salary: ${user.profile.currentSalary || 'Not specified'}
+- Desired Salary: ${user.profile.desiredSalary || 'Not specified'}
+- Availability: ${user.profile.availability || 'Not specified'}
+- Work Preference: ${user.profile.workPreference || 'Not specified'}
+- Open to Relocation: ${user.profile.relocationWillingness ? 'Yes' : 'No'}
+
+Skills & Qualifications:
+- Current Skills: ${user.profile.skills?.join(', ') || 'None specified'}
+- Certifications: ${user.profile.certifications?.join(', ') || 'None specified'}
+- LinkedIn: ${user.profile.linkedin || 'Not provided'}
+- Website/Portfolio: ${user.profile.website || 'Not provided'}
+
+Additional Notes: ${user.profile.additionalNotes || 'None provided'}
 
 Please provide a detailed analysis with the following sections:
 
 SKILL GAP ANALYSIS:
-[Provide a detailed analysis of skill gaps based on current industry requirements]
+[Provide a detailed analysis of skill gaps based on current industry requirements. Include specific learning resources, online courses, YouTube playlists, websites, and reference materials for each skill gap identified. Provide direct links where possible.]
 
 LEARNING ROADMAP:
 [Provide a personalized learning plan with recommended certifications, courses, and timeline]
@@ -78,8 +96,16 @@ Format your response clearly with these exact section headers.`;
       console.log('Returning mock analysis data for testing...');
       const mockAnalysis = {
         skillGapAnalysis: {
-          summary: `Based on your experience as a ${user.profile.previousRole} and your ${user.profile.careerBreakDuration} career break, you may have gaps in current technologies and industry practices. Key areas to focus on include digital tools, updated methodologies, and current market trends in your desired field of ${user.profile.desiredCareerPath}.`,
-          detailed: `Your previous experience as a ${user.profile.previousRole} provides a strong foundation, but the technology landscape has evolved significantly during your career break. Modern workplaces now emphasize digital collaboration tools, agile methodologies, and industry-specific software that may not have been prevalent when you last worked. 
+          summary: `Based on your experience as a ${user.profile.previousRole} and your ${user.profile.careerBreakDuration} career break, you may have gaps in current technologies and industry practices. Key areas to focus on include digital tools, updated methodologies, and current market trends in your desired field of ${user.profile.desiredCareerPath}.
+
+**Recommended Learning Resources:**
+• Online Platforms: Coursera (https://coursera.org), edX (https://edx.org), Udemy (https://udemy.com)
+• YouTube Channels: freeCodeCamp, Traversy Media, The Net Ninja
+• Professional Development: LinkedIn Learning, industry-specific certifications
+• Practice Platforms: GitHub for projects, Stack Overflow for Q&A
+
+Click "View More" for detailed study materials and specific course recommendations.`,
+          detailed: `Your previous experience as a ${user.profile.previousRole} provides a strong foundation, but the technology landscape has evolved significantly during your career break. Modern workplaces now emphasize digital collaboration tools, agile methodologies, and industry-specific software that may not have been prevalent when you last worked.
 
 Key skill gaps to address include:
 • Digital proficiency in current industry-standard tools and platforms
@@ -87,6 +113,38 @@ Key skill gaps to address include:
 • Familiarity with current market trends and emerging technologies
 • Soft skills like remote work etiquette and virtual collaboration
 • Industry-specific certifications that demonstrate current competency
+
+**Learning Resources & Study Materials:**
+
+**Digital Tools & Software:**
+• Microsoft Office 365/ Google Workspace: https://www.microsoft.com/en-us/microsoft-365
+• Zoom/Teams/Slack for remote collaboration: https://zoom.us, https://teams.microsoft.com
+• Trello/Asana/Jira for project management: https://trello.com, https://asana.com
+
+**Online Learning Platforms:**
+• Coursera: https://www.coursera.org - Free courses from universities
+• edX: https://www.edx.org - University-level courses and certifications
+• Udemy: https://www.udemy.com - Practical skill-building courses
+• LinkedIn Learning: https://www.linkedin.com/learning - Professional development
+
+**YouTube Learning Channels:**
+• freeCodeCamp: https://www.youtube.com/c/Freecodecamp - Programming and tech skills
+• Traversy Media: https://www.youtube.com/c/TraversyMedia - Web development tutorials
+• The Net Ninja: https://www.youtube.com/c/TheNetNinja - Full-stack development
+• Academind: https://www.youtube.com/c/Academind - In-depth programming tutorials
+
+**Industry-Specific Resources:**
+• For ${user.profile.desiredCareerPath}: Research industry leaders and follow their learning paths
+• Stack Overflow: https://stackoverflow.com - Programming Q&A and community
+• GitHub: https://github.com - Code repositories and collaboration
+• Medium: https://medium.com - Articles and tutorials from industry experts
+
+**Recommended Study Plan:**
+1. Start with free YouTube tutorials for quick overviews
+2. Take structured courses on Coursera/edX for certifications
+3. Practice with real projects on GitHub
+4. Join communities on Reddit, Discord, or LinkedIn groups
+5. Consider paid certifications for resume credibility
 
 The good news is that many of these skills can be learned through online courses, certifications, and practical projects. Starting with foundational courses and gradually building up to advanced topics will help you bridge these gaps efficiently.`,
           images: [

@@ -27,9 +27,43 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
+// Helper function to convert URLs in text to clickable links
+const renderTextWithLinks = (text) => {
+  if (!text) return text;
+
+  // Regex to match URLs
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+  // Split text by URLs and create React elements
+  const parts = text.split(urlRegex);
+
+  return parts.map((part, index) => {
+    if (urlRegex.test(part)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            color: '#1976d2',
+            textDecoration: 'underline',
+            wordBreak: 'break-all'
+          }}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 const Analysis = () => {
   const { isAuthenticated } = useContext(AuthContext);
   const [analysis, setAnalysis] = useState(null);
+  const [jobs, setJobs] = useState([]);
+  const [jobsLoading, setJobsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [detailedDialog, setDetailedDialog] = useState(null); // 'skillGap', 'learning', 'jobs', 'interview'
@@ -110,6 +144,21 @@ const Analysis = () => {
     setLoading(false);
   };
 
+  const fetchJobs = async () => {
+    setJobsLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/jobs/suggestions', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setJobs(response.data.jobs);
+    } catch (err) {
+      console.error('Error fetching jobs:', err);
+      setJobs([]);
+    }
+    setJobsLoading(false);
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchAnalysis();
@@ -154,11 +203,11 @@ const Analysis = () => {
                     <Typography variant="h6">Skill Gap Analysis</Typography>
                   </Box>
                   <Typography variant="body2">
-                    {truncateText(
+                    {renderTextWithLinks(truncateText(
                       (typeof analysis.skillGapAnalysis === 'object' && analysis.skillGapAnalysis?.summary) ||
                       (typeof analysis.skillGapAnalysis === 'string' && analysis.skillGapAnalysis) ||
                       'Analysis not available'
-                    )}
+                    ))}
                   </Typography>
                 </CardContent>
                 <CardActions>
@@ -193,11 +242,11 @@ const Analysis = () => {
                     <Typography variant="h6">Learning Roadmap</Typography>
                   </Box>
                   <Typography variant="body2">
-                    {truncateText(
+                    {renderTextWithLinks(truncateText(
                       (typeof analysis.learningRoadmap === 'object' && analysis.learningRoadmap?.summary) ||
                       (typeof analysis.learningRoadmap === 'string' && analysis.learningRoadmap) ||
                       'Analysis not available'
-                    )}
+                    ))}
                   </Typography>
                 </CardContent>
                 <CardActions>
@@ -232,17 +281,22 @@ const Analysis = () => {
                     <Typography variant="h6">Job Suggestions</Typography>
                   </Box>
                   <Typography variant="body2">
-                    {truncateText(
+                    {renderTextWithLinks(truncateText(
                       (typeof analysis.jobSuggestions === 'object' && analysis.jobSuggestions?.summary) ||
                       (typeof analysis.jobSuggestions === 'string' && analysis.jobSuggestions) ||
                       'Analysis not available'
-                    )}
+                    ))}
                   </Typography>
                 </CardContent>
                 <CardActions>
                   <Button
                     size="small"
-                    onClick={() => setDetailedDialog('jobs')}
+                    onClick={() => {
+                      setDetailedDialog('jobs');
+                      if (jobs.length === 0 && !jobsLoading) {
+                        fetchJobs();
+                      }
+                    }}
                     startIcon={<ExpandMoreIcon />}
                   >
                     View More
@@ -271,11 +325,11 @@ const Analysis = () => {
                     <Typography variant="h6">Interview Preparation</Typography>
                   </Box>
                   <Typography variant="body2">
-                    {truncateText(
+                    {renderTextWithLinks(truncateText(
                       (typeof analysis.interviewPrep === 'object' && analysis.interviewPrep?.summary) ||
                       (typeof analysis.interviewPrep === 'string' && analysis.interviewPrep) ||
                       'Analysis not available'
-                    )}
+                    ))}
                   </Typography>
                 </CardContent>
                 <CardActions>
@@ -331,9 +385,11 @@ const Analysis = () => {
           </DialogTitle>
           <DialogContent dividers>
             <Typography variant="body1" paragraph sx={{ whiteSpace: 'pre-line' }}>
-              {(typeof analysis?.skillGapAnalysis === 'object' && analysis.skillGapAnalysis?.detailed) ||
-               (typeof analysis?.skillGapAnalysis === 'string' && analysis.skillGapAnalysis) ||
-               'Analysis not available'}
+              {renderTextWithLinks(
+                (typeof analysis?.skillGapAnalysis === 'object' && analysis.skillGapAnalysis?.detailed) ||
+                (typeof analysis?.skillGapAnalysis === 'string' && analysis.skillGapAnalysis) ||
+                'Analysis not available'
+              )}
             </Typography>
             {(typeof analysis?.skillGapAnalysis === 'object' && analysis.skillGapAnalysis?.images && analysis.skillGapAnalysis.images.length > 0) && (
               <Box sx={{ mt: 3 }}>
@@ -459,6 +515,58 @@ const Analysis = () => {
                (typeof analysis?.jobSuggestions === 'string' && analysis.jobSuggestions) ||
                'Analysis not available'}
             </Typography>
+            
+            <Box sx={{ mt: 3 }}>
+              <Typography variant="h6" color="primary" gutterBottom>
+                Recent Job Openings from LinkedIn
+              </Typography>
+              {jobsLoading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+                  <CircularProgress />
+                  <Typography sx={{ ml: 2 }}>Loading job suggestions...</Typography>
+                </Box>
+              ) : jobs.length > 0 ? (
+                <Grid container spacing={2}>
+                  {jobs.map((job, index) => (
+                    <Grid item xs={12} key={index}>
+                      <Card variant="outlined">
+                        <CardContent>
+                          <Typography variant="h6" component="h3" gutterBottom>
+                            {job.title}
+                          </Typography>
+                          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+                            {job.company} - {job.location}
+                          </Typography>
+                          <Typography variant="body2" sx={{ mb: 1 }}>
+                            Posted: {job.postedDate}
+                          </Typography>
+                          <Typography variant="body2" paragraph>
+                            {job.description.length > 200 
+                              ? `${job.description.substring(0, 200)}...` 
+                              : job.description}
+                          </Typography>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            component="a"
+                            href={job.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            View Job on LinkedIn
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No job suggestions available at the moment.
+                </Typography>
+              )}
+            </Box>
+
             {(typeof analysis?.jobSuggestions === 'object' && analysis.jobSuggestions?.images && analysis.jobSuggestions.images.length > 0) && (
               <Box sx={{ mt: 3 }}>
                 <Typography variant="h6" color="primary" gutterBottom>

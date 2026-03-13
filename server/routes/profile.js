@@ -17,7 +17,27 @@ router.get('/', auth, async (req, res) => {
 
 // Update user profile
 router.put('/', auth, async (req, res) => {
-  const { previousRole, experience, careerBreakDuration, desiredCareerPath, skills, certifications } = req.body;
+  const {
+    previousRole,
+    experience,
+    careerBreakDuration,
+    desiredCareerPath,
+    skills,
+    certifications,
+    age,
+    location,
+    phone,
+    education,
+    linkedin,
+    website,
+    currentSalary,
+    desiredSalary,
+    languages,
+    availability,
+    workPreference,
+    relocationWillingness,
+    additionalNotes
+  } = req.body;
 
   try {
     const user = await User.findById(req.user.id);
@@ -31,6 +51,19 @@ router.put('/', auth, async (req, res) => {
       desiredCareerPath,
       skills,
       certifications,
+      age,
+      location,
+      phone,
+      education,
+      linkedin,
+      website,
+      currentSalary,
+      desiredSalary,
+      languages,
+      availability,
+      workPreference,
+      relocationWillingness,
+      additionalNotes
     };
 
     await user.save();
