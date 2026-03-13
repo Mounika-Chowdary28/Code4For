@@ -37,7 +37,7 @@ const Login = () => {
     setLoading(false);
 
     if (success) {
-      navigate('/profile');
+      navigate('/dashboard');
     } else {
       setError('Invalid credentials');
     }

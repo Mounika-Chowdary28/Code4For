@@ -21,6 +21,8 @@ router.put('/', auth, async (req, res) => {
 
   try {
     const user = await User.findById(req.user.id);
+    console.log('Updating profile for user:', req.user.id);
+    console.log('Received data:', req.body);
 
     user.profile = {
       previousRole,
@@ -32,9 +34,10 @@ router.put('/', auth, async (req, res) => {
     };
 
     await user.save();
+    console.log('Profile saved successfully');
     res.json(user);
   } catch (err) {
-    console.error(err.message);
+    console.error('Error saving profile:', err.message);
     res.status(500).send('Server error');
   }
 });

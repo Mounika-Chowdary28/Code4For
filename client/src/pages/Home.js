@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -7,14 +8,25 @@ import {
   Grid,
   Card,
   CardContent,
-  CardActions,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import WorkIcon from '@mui/icons-material/Work';
 import SchoolIcon from '@mui/icons-material/School';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 
 const Home = () => {
+  const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (isAuthenticated) {
+    return null; // Will redirect
+  }
   return (
     <Container maxWidth="lg">
       <Box sx={{ my: 4, textAlign: 'center' }}>

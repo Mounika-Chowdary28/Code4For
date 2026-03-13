@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Analysis from './pages/Analysis';
 import Login from './pages/Login';
@@ -37,6 +38,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/analysis" element={<Analysis />} />
           <Route path="/login" element={<Login />} />
