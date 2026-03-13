@@ -11,12 +11,28 @@ import {
   Alert,
   Card,
   CardContent,
+  Avatar,
+  Divider,
+  Fade,
+  Slide,
+  Zoom,
 } from '@mui/material';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import PersonIcon from '@mui/icons-material/Person';
+import WorkIcon from '@mui/icons-material/Work';
+import SchoolIcon from '@mui/icons-material/School';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PhoneIcon from '@mui/icons-material/Phone';
+import LanguageIcon from '@mui/icons-material/Language';
+import CodeIcon from '@mui/icons-material/Code';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import WebIcon from '@mui/icons-material/Web';
 
 const emptyProfile = {
   age: '',

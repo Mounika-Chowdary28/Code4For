@@ -10,6 +10,145 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Test route for mock data (no auth required)
+router.get('/test', async (req, res) => {
+  try {
+    console.log('Test analysis request received');
+
+    // Mock user data for testing
+    const user = {
+      profile: {
+        previousRole: 'Software Engineer',
+        experience: '5 years',
+        careerBreakDuration: '3 years',
+        desiredCareerPath: 'Full Stack Development',
+        location: 'San Francisco, CA',
+        skills: ['JavaScript', 'React', 'Node.js'],
+        certifications: ['AWS Certified Developer'],
+        linkedin: 'https://linkedin.com/in/testuser',
+        website: 'https://portfolio.com'
+      }
+    };
+
+    // Return mock analysis data
+    const mockAnalysis = {
+      skillGapAnalysis: {
+        summary: `Based on your experience as a ${user.profile.previousRole} and your ${user.profile.careerBreakDuration} career break, you may have gaps in current technologies and industry practices.`,
+        detailed: `**Key Skill Gaps Identified:**
+
+**Technical Skills:**
+• React Hooks and Functional Components
+• Modern JavaScript (ES6+, async/await, modules)
+• Cloud platforms (AWS, Azure, GCP)
+• Containerization (Docker, Kubernetes)
+• CI/CD pipelines and DevOps practices
+
+**Soft Skills:**
+• Agile/Scrum methodologies
+• Remote work collaboration tools
+• Current industry networking
+
+**Learning Resources:**
+
+**Online Courses:**
+• React - The Complete Guide: https://www.udemy.com/course/react-the-complete-guide-incl-redux/
+• Modern JavaScript: https://www.udemy.com/course/modern-javascript-from-the-beginning/
+• AWS Certified Developer: https://aws.amazon.com/certification/certified-developer-associate/
+
+**YouTube Channels:**
+• Traversy Media: https://www.youtube.com/c/TraversyMedia
+• Academind: https://www.youtube.com/c/Academind
+• freeCodeCamp: https://www.youtube.com/c/Freecodecamp
+
+**Practice Platforms:**
+• LeetCode: https://leetcode.com/
+• HackerRank: https://www.hackerrank.com/
+• freeCodeCamp: https://www.freecodecamp.org/
+
+**Documentation:**
+• React Docs: https://reactjs.org/docs/getting-started.html
+• MDN Web Docs: https://developer.mozilla.org/
+• AWS Documentation: https://docs.aws.amazon.com/`,
+        images: [
+          'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop',
+          'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop'
+        ]
+      },
+      learningRoadmap: {
+        summary: `1. Start with foundational courses in your field\n2. Take certification programs relevant to ${user.profile.desiredCareerPath}\n3. Practice with current tools and technologies\n4. Network with professionals in your industry\n5. Consider mentorship programs for career re-entry`,
+        detailed: `A structured learning approach will help you systematically bridge skill gaps and prepare for re-entry into the workforce.`,
+        images: [
+          'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&h=400&fit=crop',
+          'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop'
+        ]
+      },
+      jobSuggestions: {
+        summary: `Consider roles such as ${user.profile.previousRole} positions with companies offering return-to-work programs.`,
+        detailed: `Senior Software Engineer - https://www.linkedin.com/jobs/search/?keywords=senior%20software%20engineer&location=${encodeURIComponent(user.profile.location || 'United States')}
+A great role for leveraging your experience with opportunities to work on cutting-edge technologies.`,
+        images: [
+          'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop',
+          'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop'
+        ]
+      },
+      interviewPrep: {
+        summary: `Refresh your knowledge of current industry trends and technologies. Practice explaining your career break positively.`,
+        detailed: `Effective interview preparation is crucial for a successful career re-entry. Here's a comprehensive guide with specific resources and links:
+
+Technical Interview Preparation:
+• LeetCode: https://leetcode.com/ - Practice coding problems with company-specific questions
+• HackerRank: https://www.hackerrank.com/ - Technical skills assessment and practice
+• Pramp: https://www.pramp.com/ - Free peer-to-peer mock technical interviews
+• Interviewing.io: https://interviewing.io/ - Anonymous technical interview practice
+
+Behavioral Interview Resources:
+• STAR Method Guide: https://www.themuse.com/advice/star-interview-method - Framework for answering behavioral questions
+• Big Interview: https://biginterview.com/ - Video practice platform for interview skills
+• Interview Cake: https://www.interviewcake.com/ - Technical and behavioral interview prep
+
+Industry-Specific Preparation:
+• LinkedIn Learning: https://www.linkedin.com/learning/ - Free courses on industry trends and skills
+• Coursera Interview Prep: https://www.coursera.org/courses?query=interview%20preparation - Structured interview courses
+• Udemy Interview Courses: https://www.udemy.com/topic/interview-preparation/ - Affordable video courses
+
+Resume and Profile Optimization:
+• ResumeLab: https://resumelab.com/ - Resume templates and optimization tools
+• Canva Resume Builder: https://www.canva.com/resumes/templates/ - Free resume design templates
+• LinkedIn Profile Optimization: https://www.linkedin.com/help/linkedin/answer/a521929 - Official LinkedIn guides
+
+Mock Interview Platforms:
+• Pramp: https://www.pramp.com/ - Free peer-to-peer practice interviews
+• Interviewing.io: https://interviewing.io/ - Anonymous interview practice
+• Gainlo: https://www.gainlo.co/ - Interview experiences and practice questions
+
+Virtual Interview Tips:
+• Zoom Interview Tips: https://blog.zoom.us/zoom-interview-tips/ - Best practices for virtual interviews
+• Technical Setup Guide: https://www.themuse.com/advice/technical-interview-tips - Virtual interview preparation
+
+Career Break Communication:
+• Positive Framing Guide: https://www.forbes.com/sites/forbescoachescouncil/2021/05/14/how-to-explain-a-career-break-in-an-interview/ - Articles on addressing career gaps
+• Transferable Skills Focus: https://www.monster.com/career-advice/article/how-to-explain-employment-gaps - Strategies for explaining breaks
+
+Practice Resources:
+• Glassdoor Interview Questions: https://www.glassdoor.com/Interview/index.htm - Company-specific interview questions
+• Indeed Interview Prep: https://www.indeed.com/career-advice/interviewing - Free interview guides and tips
+• YouTube Interview Channels: https://www.youtube.com/results?search_query=job+interview+tips - Free video tutorials
+
+Remember to practice regularly, record yourself, and seek feedback.`,
+        images: [
+          'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&h=400&fit=crop',
+          'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop'
+        ]
+      }
+    };
+
+    res.json(mockAnalysis);
+  } catch (err) {
+    console.error('Test analysis route error:', err);
+    res.status(500).json({ msg: 'Server error occurred' });
+  }
+});
+
 // Get career analysis
 router.get('/', auth, async (req, res) => {
   try {
@@ -62,10 +201,10 @@ LEARNING ROADMAP:
 [Provide a personalized learning plan with recommended certifications, courses, and timeline]
 
 JOB SUGGESTIONS:
-[Suggest suitable job roles, returnship programs, and career transition opportunities]
+[Suggest suitable job roles, returnship programs, and career transition opportunities. Include specific LinkedIn job search links for each suggested role based on the user's location and skills. Format as: Role Title - LinkedIn Search Link - Brief description]
 
 INTERVIEW PREPARATION:
-[Provide guidance for interview preparation and skill refresh recommendations]
+[Provide comprehensive interview preparation guidance with specific resources, online courses, practice platforms, and preparation materials. Include direct links to useful websites, YouTube channels, practice platforms, and preparation guides. Cover technical interviews, behavioral questions, and industry-specific preparation.]
 
 Format your response clearly with these exact section headers.`;
 
@@ -189,34 +328,29 @@ Remember to maintain a healthy balance between learning and practical applicatio
         },
         jobSuggestions: {
           summary: `Consider roles such as ${user.profile.previousRole} positions with companies offering return-to-work programs. Look for companies with flexible work arrangements and returnship programs specifically designed for career re-entry. Entry-level or mid-level positions in growing companies could be a good starting point.`,
-          detailed: `The job market offers numerous opportunities for career re-entry, especially with your background in ${user.profile.previousRole}. Here are targeted suggestions for your successful return:
+          detailed: `The job market offers numerous opportunities for career re-entry, especially with your background in ${user.profile.previousRole}. Here are targeted suggestions with LinkedIn job search links:
 
-Returnship Programs:
-• Corporate return-to-work programs (6-12 months paid programs)
-• Companies like Microsoft, Amazon, and Goldman Sachs offer structured re-entry
-• Focus on roles that leverage your existing experience while allowing skill updates
+Senior Software Engineer - https://www.linkedin.com/jobs/search/?keywords=senior%20software%20engineer&location=${encodeURIComponent(user.profile.location || 'United States')}
+A great role for leveraging your ${user.profile.previousRole} experience with opportunities to work on cutting-edge technologies and mentor junior team members.
 
-Flexible Work Arrangements:
-• Remote or hybrid positions that accommodate work-life balance needs
-• Part-time or project-based roles for gradual re-entry
-• Consulting opportunities to build recent experience
+Product Manager - https://www.linkedin.com/jobs/search/?keywords=product%20manager&location=${encodeURIComponent(user.profile.location || 'United States')}
+Perfect for career re-entry with focus on strategy, user experience, and cross-functional collaboration. Many companies offer returnship programs in product roles.
 
-Career Transition Roles:
-• Positions that build on your transferable skills from ${user.profile.previousRole}
-• Roles in growing industries like technology, healthcare, and education
-• Entry-level positions in companies valuing diversity and inclusion
+Data Analyst - https://www.linkedin.com/jobs/search/?keywords=data%20analyst&location=${encodeURIComponent(user.profile.location || 'United States')}
+Growing field with high demand for analytical skills. Remote opportunities available and companies value transferable skills from various backgrounds.
 
-Industry-Specific Opportunities:
-• Companies in ${user.profile.desiredCareerPath} with inclusive hiring practices
-• Organizations with employee resource groups for career re-entry
-• Startups and mid-sized companies often more flexible than large corporations
+UX Designer - https://www.linkedin.com/jobs/search/?keywords=ux%20designer&location=${encodeURIComponent(user.profile.location || 'United States')}
+Creative role that benefits from diverse perspectives. Many design teams welcome career re-entry professionals and offer flexible work arrangements.
 
-Additional Considerations:
-• Look for companies with parental leave and flexible scheduling policies
-• Consider roles that offer professional development and mentorship
-• Evaluate company culture and values alignment with your career goals
+Project Manager - https://www.linkedin.com/jobs/search/?keywords=project%20manager&location=${encodeURIComponent(user.profile.location || 'United States')}
+Strong demand for organizational and leadership skills. Returnship programs often include project management training and mentorship.
 
-Start by researching companies known for supporting career re-entry and update your professional profiles to highlight your enthusiasm for returning to work.`,
+Additional Opportunities:
+• Returnship Programs: Search for "returnship program" on LinkedIn for structured re-entry opportunities
+• Remote Work: Filter LinkedIn searches for remote positions to find flexible arrangements
+• Company Return Programs: Companies like Microsoft, Amazon, and Goldman Sachs have dedicated career re-entry initiatives
+
+Start by exploring these LinkedIn searches and update your profile to highlight your enthusiasm for returning to work. Consider reaching out to alumni networks and professional groups for additional opportunities.`,
           images: [
             'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop',
             'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop'
@@ -224,35 +358,48 @@ Start by researching companies known for supporting career re-entry and update y
         },
         interviewPrep: {
           summary: `Refresh your knowledge of current industry trends and technologies. Practice explaining your career break positively. Prepare stories about your previous experience and how it relates to current opportunities. Consider mock interviews and update your resume to highlight transferable skills.`,
-          detailed: `Effective interview preparation is crucial for a successful career re-entry. Here's a comprehensive guide to help you prepare:
+          detailed: `Effective interview preparation is crucial for a successful career re-entry. Here's a comprehensive guide with specific resources and links:
 
-Understanding the Interview Landscape:
-• Modern interviews often include behavioral, technical, and situational questions
-• Companies increasingly focus on cultural fit and growth potential
-• Virtual interviews require different preparation than in-person meetings
+Technical Interview Preparation:
+• LeetCode: https://leetcode.com/ - Practice coding problems with company-specific questions
+• HackerRank: https://www.hackerrank.com/ - Technical skills assessment and practice
+• Pramp: https://www.pramp.com/ - Free peer-to-peer mock technical interviews
+• Interviewing.io: https://interviewing.io/ - Anonymous technical interview practice
 
-Addressing the Career Break:
-• Prepare a positive, concise explanation for your career break
-• Focus on transferable skills and continuous learning during the break
-• Highlight how your break has given you new perspectives and priorities
+Behavioral Interview Resources:
+• STAR Method Guide: https://www.themuse.com/advice/star-interview-method - Framework for answering behavioral questions
+• Big Interview: https://biginterview.com/ - Video practice platform for interview skills
+• Interview Cake: https://www.interviewcake.com/ - Technical and behavioral interview prep
 
-Technical Preparation:
-• Refresh knowledge of current industry trends and technologies
-• Practice technical skills relevant to ${user.profile.desiredCareerPath}
-• Prepare for coding assessments, case studies, or portfolio reviews
+Industry-Specific Preparation:
+• LinkedIn Learning: https://www.linkedin.com/learning/ - Free courses on industry trends and skills
+• Coursera Interview Prep: https://www.coursera.org/courses?query=interview%20preparation - Structured interview courses
+• Udemy Interview Courses: https://www.udemy.com/topic/interview-preparation/ - Affordable video courses
 
-Behavioral Interview Practice:
-• Prepare STAR (Situation, Task, Action, Result) stories from your experience
-• Practice explaining how your previous role skills apply to current opportunities
-• Prepare questions to ask interviewers about company culture and growth
+Resume and Profile Optimization:
+• ResumeLab: https://resumelab.com/ - Resume templates and optimization tools
+• Canva Resume Builder: https://www.canva.com/resumes/templates/ - Free resume design templates
+• LinkedIn Profile Optimization: https://www.linkedin.com/help/linkedin/answer/a521929 - Official LinkedIn guides
 
-Practical Steps:
-• Conduct mock interviews with mentors or career coaches
-• Record yourself answering common questions and review for improvement
-• Research the company and prepare thoughtful questions
-• Update your resume and LinkedIn to reflect current market relevance
+Mock Interview Platforms:
+• Pramp: https://www.pramp.com/ - Free peer-to-peer practice interviews
+• Interviewing.io: https://interviewing.io/ - Anonymous interview practice
+• Gainlo: https://www.gainlo.co/ - Interview experiences and practice questions
 
-Remember that interviews are a two-way street. You're also evaluating whether the company and role are a good fit for your career goals and work-life balance needs.`,
+Virtual Interview Tips:
+• Zoom Interview Tips: https://blog.zoom.us/zoom-interview-tips/ - Best practices for virtual interviews
+• Technical Setup Guide: https://www.themuse.com/advice/technical-interview-tips - Virtual interview preparation
+
+Career Break Communication:
+• Positive Framing Guide: https://www.forbes.com/sites/forbescoachescouncil/2021/05/14/how-to-explain-a-career-break-in-an-interview/ - Articles on addressing career gaps
+• Transferable Skills Focus: https://www.monster.com/career-advice/article/how-to-explain-employment-gaps - Strategies for explaining breaks
+
+Practice Resources:
+• Glassdoor Interview Questions: https://www.glassdoor.com/Interview/index.htm - Company-specific interview questions
+• Indeed Interview Prep: https://www.indeed.com/career-advice/interviewing - Free interview guides and tips
+• YouTube Interview Channels: https://www.youtube.com/results?search_query=job+interview+tips - Free video tutorials
+
+Remember to practice regularly, record yourself, and seek feedback. Start with 30-minute daily practice sessions focusing on different types of interview questions. Consider working with a career coach for personalized feedback on your interview performance.`,
           images: [
             'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&h=400&fit=crop',
             'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop'

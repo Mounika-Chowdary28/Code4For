@@ -14,40 +14,46 @@ router.get('/suggestions', authenticateToken, async (req, res) => {
     }
 
     const profile = user.profile;
+    console.log('Fetching jobs for user profile:', {
+      previousRole: profile.previousRole,
+      desiredRole: profile.desiredRole,
+      skills: profile.skills,
+      location: profile.location
+    });
 
-    // For now, return mock data. To use real API, set RAPIDAPI_KEY in .env and uncomment the API call below
+    // For now, return mock data with LinkedIn search links. To use real API, set RAPIDAPI_KEY in .env and uncomment the API call below
     const mockJobs = [
       {
         title: 'Senior Software Engineer',
         company: 'Tech Innovations Inc.',
         location: profile.location || 'San Francisco, CA',
-        link: 'https://linkedin.com/jobs/view/senior-software-engineer-123',
+        link: `https://www.linkedin.com/jobs/search/?keywords=senior%20software%20engineer&location=${encodeURIComponent(profile.location || 'San Francisco, CA')}`,
         postedDate: '3 days ago',
-        description: `We are looking for a ${profile.previousRole} with experience in ${profile.skills.join(', ')} to join our team. This role involves developing cutting-edge applications and working on innovative projects.`
+        description: `We are looking for a ${profile.previousRole || 'software engineer'} with experience in ${profile.skills?.join(', ') || 'various technologies'} to join our team. This role involves developing cutting-edge applications and working on innovative projects.`
       },
       {
         title: 'Product Manager',
         company: 'Global Solutions Ltd.',
         location: profile.location || 'New York, NY',
-        link: 'https://linkedin.com/jobs/view/product-manager-456',
+        link: `https://www.linkedin.com/jobs/search/?keywords=product%20manager&location=${encodeURIComponent(profile.location || 'New York, NY')}`,
         postedDate: '1 week ago',
-        description: `Seeking a career re-entry professional with ${profile.previousRole} background to manage product development. Skills in ${profile.skills.slice(0, 3).join(', ')} are highly valued.`
+        description: `Seeking a career re-entry professional with ${profile.previousRole || 'management'} background to manage product development. Skills in ${profile.skills?.slice(0, 3).join(', ') || 'product management'} are highly valued.`
       },
       {
         title: 'Data Analyst',
         company: 'Analytics Corp',
         location: 'Remote',
-        link: 'https://linkedin.com/jobs/view/data-analyst-789',
+        link: 'https://www.linkedin.com/jobs/search/?keywords=data%20analyst&location=Remote',
         postedDate: '5 days ago',
-        description: 'Join our team to analyze data and provide insights. Experience with data tools and analytics is preferred.'
+        description: 'Join our team to analyze data and provide insights. Experience with data tools and analytics is preferred. Great opportunity for career transition.'
       },
       {
         title: 'UX Designer',
         company: 'Creative Agency',
         location: profile.location || 'Austin, TX',
-        link: 'https://linkedin.com/jobs/view/ux-designer-101',
+        link: `https://www.linkedin.com/jobs/search/?keywords=ux%20designer&location=${encodeURIComponent(profile.location || 'Austin, TX')}`,
         postedDate: '2 days ago',
-        description: 'Design user experiences for web and mobile applications. Portfolio and design skills required.'
+        description: 'Design user experiences for web and mobile applications. Portfolio and design skills required. Perfect for creative professionals returning to work.'
       }
     ];
 
@@ -98,7 +104,26 @@ router.get('/suggestions', authenticateToken, async (req, res) => {
     res.json({ jobs: mockJobs });
   } catch (error) {
     console.error('Error fetching jobs:', error);
-    res.status(500).json({ message: 'Failed to fetch job suggestions' });
+    // Always return fallback jobs
+    const fallbackJobs = [
+      {
+        title: 'Software Developer',
+        company: 'Tech Company',
+        location: 'Remote',
+        link: 'https://www.linkedin.com/jobs/search/?keywords=software%20developer&location=Remote',
+        postedDate: '1 week ago',
+        description: 'Great opportunity for developers to join our team and work on exciting projects.'
+      },
+      {
+        title: 'Project Manager',
+        company: 'Business Solutions Inc.',
+        location: 'New York, NY',
+        link: 'https://www.linkedin.com/jobs/search/?keywords=project%20manager&location=New%20York%2C%20NY',
+        postedDate: '3 days ago',
+        description: 'Manage projects and lead teams in a dynamic environment.'
+      }
+    ];
+    res.json({ jobs: fallbackJobs });
   }
 });
 

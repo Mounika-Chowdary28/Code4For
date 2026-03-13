@@ -62,8 +62,6 @@ const renderTextWithLinks = (text) => {
 const Analysis = () => {
   const { isAuthenticated } = useContext(AuthContext);
   const [analysis, setAnalysis] = useState(null);
-  const [jobs, setJobs] = useState([]);
-  const [jobsLoading, setJobsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [detailedDialog, setDetailedDialog] = useState(null); // 'skillGap', 'learning', 'jobs', 'interview'
@@ -142,21 +140,6 @@ const Analysis = () => {
       setError('Failed to load analysis. Please try again.');
     }
     setLoading(false);
-  };
-
-  const fetchJobs = async () => {
-    setJobsLoading(true);
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/jobs/suggestions', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setJobs(response.data.jobs);
-    } catch (err) {
-      console.error('Error fetching jobs:', err);
-      setJobs([]);
-    }
-    setJobsLoading(false);
   };
 
   useEffect(() => {
@@ -291,12 +274,7 @@ const Analysis = () => {
                 <CardActions>
                   <Button
                     size="small"
-                    onClick={() => {
-                      setDetailedDialog('jobs');
-                      if (jobs.length === 0 && !jobsLoading) {
-                        fetchJobs();
-                      }
-                    }}
+                    onClick={() => setDetailedDialog('jobs')}
                     startIcon={<ExpandMoreIcon />}
                   >
                     View More
@@ -511,62 +489,12 @@ const Analysis = () => {
           </DialogTitle>
           <DialogContent dividers>
             <Typography variant="body1" paragraph sx={{ whiteSpace: 'pre-line' }}>
-              {(typeof analysis?.jobSuggestions === 'object' && analysis.jobSuggestions?.detailed) ||
-               (typeof analysis?.jobSuggestions === 'string' && analysis.jobSuggestions) ||
-               'Analysis not available'}
-            </Typography>
-            
-            <Box sx={{ mt: 3 }}>
-              <Typography variant="h6" color="primary" gutterBottom>
-                Recent Job Openings from LinkedIn
-              </Typography>
-              {jobsLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
-                  <CircularProgress />
-                  <Typography sx={{ ml: 2 }}>Loading job suggestions...</Typography>
-                </Box>
-              ) : jobs.length > 0 ? (
-                <Grid container spacing={2}>
-                  {jobs.map((job, index) => (
-                    <Grid item xs={12} key={index}>
-                      <Card variant="outlined">
-                        <CardContent>
-                          <Typography variant="h6" component="h3" gutterBottom>
-                            {job.title}
-                          </Typography>
-                          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-                            {job.company} - {job.location}
-                          </Typography>
-                          <Typography variant="body2" sx={{ mb: 1 }}>
-                            Posted: {job.postedDate}
-                          </Typography>
-                          <Typography variant="body2" paragraph>
-                            {job.description.length > 200 
-                              ? `${job.description.substring(0, 200)}...` 
-                              : job.description}
-                          </Typography>
-                          <Button
-                            variant="contained"
-                            size="small"
-                            component="a"
-                            href={job.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            View Job on LinkedIn
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Grid>
-              ) : (
-                <Typography variant="body2" color="text.secondary">
-                  No job suggestions available at the moment.
-                </Typography>
+              {renderTextWithLinks(
+                (typeof analysis?.jobSuggestions === 'object' && analysis.jobSuggestions?.detailed) ||
+                (typeof analysis?.jobSuggestions === 'string' && analysis.jobSuggestions) ||
+                'Analysis not available'
               )}
-            </Box>
-
+            </Typography>
             {(typeof analysis?.jobSuggestions === 'object' && analysis.jobSuggestions?.images && analysis.jobSuggestions.images.length > 0) && (
               <Box sx={{ mt: 3 }}>
                 <Typography variant="h6" color="primary" gutterBottom>
